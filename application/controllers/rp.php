@@ -17,33 +17,40 @@ class Rp extends CI_Controller {
 	 * 默认方法
 	 */
 	public function index() {
-		$furl = "http://www.juemei.cc/html/list/PiaCdJCbHHaammbaC.html";
-		$e = file_get_contents($furl);
+
 		$sites = $this->config->item('sites');
 		foreach($sites as $k=>$v) {
 			$imgArr = array();
 			$ret = $this->base->get_data('pageUrl', array('siteId'=>$k, 'state'=>0))->result_array();
-			foreach($ret as $row) {
-				$content = file_get_contents($row['pageUrl']);
-				$reg = "/<div id=\"viewimgbox\"><img src=\"(.*?)\".*<div class=\"showpage\">(.*?)<\/div>/";
-				//$reg = "/<div id=\"viewimgbox\"><img src=\"(.*?)\".*<div class=\"showpage\"><a href=\"([^<>]+)\">上一组<\/a><em>1<\/em><href=\"(.*?)\">\d{1,2}<\/a>/";
-				preg_match($reg, $content, $match);
-				$imgArr[] = $match[1];
+			foreach($ret as $row) {	
+				$reg = "/<img src=\'(\/uploads\/allimg\/.*?\.jpg)\' id=\'bigimg\'/";
 
-				if(isset($match[2])) {
-					$reg = "/<a href=\'.*?\'>(\d{1,2})<\/a>/";
-					preg_match_all($reg, $match[2], $match2);
-					
-					if($match2) {
-						foreach ($match2 as $value) {
-							
-						}
+				$content = file_get_contents($row['pageUrl']);
+				$pageUrl = pathinfo($row['pageUrl']);
+				$url = parse_url($row['pageUrl']);
+				$host = $url['scheme'].'://'.$url['host'].'/';
+				
+				//$reg = "/<div id=\"imgString\"><img src=\"(.*?\.jpg)\".*<div class=\"pagelist\">(.*?)<\/div>/";
+				
+				preg_match($reg, $content, $match);
+				$imgArr[] = $host.$match[1];
+
+				$regUrl = "/<li><a href=\'(\d{1,7}_\d{1,2}\.html)?\'>\d{1,2}<\/a><\/li>/";
+				preg_match_all($regUrl, $content, $match2);
+				if($match2) {
+					foreach ($match2[1] as $value) {
+						$url = $match3 = '';
+						$content = file_get_contents($pageUrl['dirname'].'/'.$value);
+
+						preg_match($reg, $content, $match3);
+						//debug($match3);
+						$imgArr[] = $host.$match3[1];							
 					}
 				}
-				debug($match);
+				debug($imgArr);
+				
 			}
 		}
-
 
 	}
 

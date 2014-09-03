@@ -4,9 +4,13 @@ $config['signPostfix']	= '!qaa$%^&*zxsw234edc$%^';
 $config['userPostfix']	= '!Q767iizld#$w234e@#!%^';
 
 $config['sites'] = array(
-	1	=> array(
+/*	1	=> array(
 		'title'			=>'juemei.cc',
 		'contentReg'	=> '',
-	),
+	),*/
+	2	=> array(
+		'title'			=>'22mm.cc',
+		'contentReg'	=> '',
+	),	
 );
 ?>
